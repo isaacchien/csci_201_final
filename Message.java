@@ -1,4 +1,3 @@
-package self.use.edu;
 
 import java.io.Serializable;
 
