@@ -48,8 +48,7 @@ class ServerThread extends Thread {
 				
 				if(objectReceived instanceof Message){
 					Message messageReceived = (Message)objectReceived;
-					String messageText = messageReceived.getText();
-					System.out.println(messageText);
+					// do stuff with message
 				}
 			}
 			

@@ -51,7 +51,7 @@ public class GameClient implements Runnable{
 			// send a message every second
 			while(true){
 				
-				Message testMessageToSend = new Message("Hello server - from client");
+				Message testMessageToSend = new Message();
 				out.writeObject(testMessageToSend);
 				Thread.sleep(1000);
 					

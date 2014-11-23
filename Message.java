@@ -3,13 +3,13 @@ import java.io.Serializable;
 
 public class Message implements Serializable{
  
-    private String message;
+    private String messageFrom;
  
-    public Message(String message) {
-        this.message = message;
+    public Message() {
+    	
     }
  
-    public String getText(){
-        return message;
+    public String getUsernameMessageIsFrom(){
+        return messageFrom;
     }
 }
