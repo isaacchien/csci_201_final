@@ -21,7 +21,7 @@ public class ServerUser extends User implements Runnable {
 	public static final String DB_NAME = "group_db";
 	public static final String DRIVER = "com.mysql.jdbc.Driver";
 	public static final String USER = "root";
-	public static final String PASSWORD = "";
+	public static final String PASSWORD = "toor";
 	private static ReentrantLock lock = new ReentrantLock();
 	
 	public ServerUser(Socket s) {
@@ -35,13 +35,13 @@ public class ServerUser extends User implements Runnable {
 	}
 	
 	public boolean login(String username, String pass, Connection con) {
-		lock.lock();
+		//lock.lock();
 		if(con == null) {
 			con = establishConnection();
 		}
 		if(con == null) {
 			//null;
-			lock.unlock();
+			//lock.unlock();
 			return false;
 		}
 		PreparedStatement stmt;
@@ -54,14 +54,14 @@ public class ServerUser extends User implements Runnable {
 				this.setID(results.getInt("id"));
 				this.setUsername(username);
 				this.fetch();
-				lock.unlock();
+				//lock.unlock();
 				return true;
 			} 
-			lock.unlock();
+			//lock.unlock();
 			return false;
 		} catch (SQLException e) {
 			e.printStackTrace();
-			lock.unlock();
+			//lock.unlock();
 			return false;
 		}
 	}
@@ -70,7 +70,7 @@ public class ServerUser extends User implements Runnable {
 		Connection con = establishConnection();
 		if(con == null) {
 			//null;
-			lock.unlock();
+			//lock.unlock();
 			return false;
 		}
 		PreparedStatement stmt;
@@ -81,7 +81,7 @@ public class ServerUser extends User implements Runnable {
 			ResultSet results = stmt.executeQuery();
 			if(!results.next()) {
 				//throw existing user
-				lock.unlock();
+				//lock.unlock();
 				return false;
 			}
 			PreparedStatement stmt2 = con.prepareStatement("INSERT INTO users (username, password) VALUES (?, ?);");
@@ -90,7 +90,7 @@ public class ServerUser extends User implements Runnable {
 			return login(username, pass, con);
 		} catch (SQLException e) {
 			e.printStackTrace();
-			lock.unlock();
+			//lock.unlock();
 			return false;
 		}
 	}
@@ -107,7 +107,7 @@ public class ServerUser extends User implements Runnable {
 	}
 	
 	public boolean update () {
-		lock.lock();
+		//lock.lock();
 		try {
 			Connection con = establishConnection();
 			if(con == null) {
@@ -125,33 +125,33 @@ public class ServerUser extends User implements Runnable {
 			stmt.execute();
 		} catch(Exception e) {
 			e.printStackTrace();
-			lock.unlock();
+			//lock.unlock();
 			return false;
 		} finally {
-			lock.unlock();
+			//lock.unlock();
 			return true;
 		}
 	}
 	
 	public boolean fetch() {
-		lock.lock();
+		//lock.lock();
 		Connection con = establishConnection();
 		if(con == null) {
 			//badddd
-			lock.unlock();
+			//lock.unlock();
 			return false;
 		}
 		try {
 			Statement stmt = con.createStatement();
 			if(con == null) {
 				System.out.println("Unable to establish connection");
-				lock.unlock();
+				//lock.unlock();
 				return false;
 			}
 			ResultSet results = stmt.executeQuery("SELECT wins, total_games, money, steroids, morphine, epinephrine FROM users WHERE id = " + this.getID() + ";");
 			if(results == null) {
 				System.out.println("There were no results");
-				lock.unlock();
+				//lock.unlock();
 				return false;
 			}
 			results.next();
@@ -163,10 +163,10 @@ public class ServerUser extends User implements Runnable {
 			this.getItems().put("epinephrine", results.getInt("epinephrine"));
 		} catch(Exception e) {
 			e.printStackTrace();
-			lock.unlock();
+			//lock.unlock();
 			return false;
 		} finally {
-			lock.unlock();
+			//lock.unlock();
 			return false;
 		}
 	}
@@ -180,7 +180,7 @@ public class ServerUser extends User implements Runnable {
 				e.printStackTrace();
 			}
 		} else if(msg instanceof NewUser) {
-			boolean succeeded = this.createUser(((Login) msg).getUsername(), ((Login) msg).getPassword());
+			boolean succeeded = this.createUser(((NewUser) msg).getUsername(), ((NewUser) msg).getPassword());
 			try {
 				out.writeObject(new LoginAuthenticated(succeeded));
 			} catch (IOException e) {
@@ -202,6 +202,7 @@ public class ServerUser extends User implements Runnable {
 			
 		} catch (Exception ioe) {
 			System.out.println("IOException in ServerUser run method: " + ioe.getMessage());
+			ioe.printStackTrace();
 		}
 	}
 

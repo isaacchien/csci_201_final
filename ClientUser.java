@@ -30,11 +30,11 @@ public class ClientUser extends User implements Runnable{
 	
 	public void run() {
 		
-		
+		System.out.println("Top of run in ClientUser");
 		
 		while(true){
 			
-			System.out.println("Top of run in ClientUser");
+			
 			
 			try{
 				

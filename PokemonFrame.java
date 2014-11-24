@@ -362,9 +362,9 @@ public class PokemonFrame extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// SEND LOGIN MESSAGE
-				Login loginMessage = new Login();
-				loginMessage.setUsername(usernameField.getText());
-				loginMessage.setPassword(passwordField.getText());
+				NewUser loginMessage = new NewUser(usernameField.getText(), passwordField.getText());
+				//loginMessage.setUsername(usernameField.getText());
+				//loginMessage.setPassword(passwordField.getText());
 				try {
 					myClientUser.getOutputStream().writeObject(loginMessage);
 					
