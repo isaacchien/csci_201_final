@@ -35,7 +35,6 @@ public class ClientUser extends User implements Runnable{
 		while(true){
 			
 			
-			
 			try{
 				
 				

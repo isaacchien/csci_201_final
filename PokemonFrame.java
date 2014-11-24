@@ -243,6 +243,20 @@ public class PokemonFrame extends JFrame {
         signUpButton.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				// SEND LOGIN MESSAGE
+				NewUser newLoginMessage = new NewUser(loginField.getText(), passwordField.getText());
+				try {
+					myClientUser.getOutputStream().writeObject(newLoginMessage);
+					
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+				
+				System.out.println("Username:" +  newLoginMessage.getUsername());
+				System.out.println("Password:" + newLoginMessage.getPassword());
+				
+				
+				
 				cl.show(outerPanel, "Main Menu");
 			}
         });
@@ -362,9 +376,9 @@ public class PokemonFrame extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// SEND LOGIN MESSAGE
-				NewUser loginMessage = new NewUser(usernameField.getText(), passwordField.getText());
-				//loginMessage.setUsername(usernameField.getText());
-				//loginMessage.setPassword(passwordField.getText());
+				Login loginMessage = new Login();
+				loginMessage.setUsername(usernameField.getText());
+				loginMessage.setPassword(passwordField.getText());
 				try {
 					myClientUser.getOutputStream().writeObject(loginMessage);
 					
@@ -375,7 +389,7 @@ public class PokemonFrame extends JFrame {
 				System.out.println("Username:" +  loginMessage.getUsername());
 				System.out.println("Password:" + loginMessage.getPassword());
 				
-				
+				//should not happen yet
 				cl.show(outerPanel, "Main Menu");
 			}
         });
