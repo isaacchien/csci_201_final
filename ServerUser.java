@@ -1,3 +1,4 @@
+import java.io.ObjectInputStream;
 import java.net.Socket;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -162,8 +163,25 @@ public class ServerUser extends User implements Runnable {
 		}
 	}
 	
-	public void run() {
+	private void parse(Message msg) {
 		
+	}
+	
+	public void run() {
+		try {
+			ObjectInputStream in  = new ObjectInputStream(userSocket.getInputStream());
+			
+			while(true){
+				Object objectReceived = in.readObject();
+				if(objectReceived instanceof Message){
+					Message messageReceived = (Message)objectReceived;
+					// do stuff with message
+				}
+			}
+			
+		} catch (Exception ioe) {
+			System.out.println("IOException in ServerUser run method: " + ioe.getMessage());
+		}
 	}
 
 }
