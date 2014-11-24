@@ -15,7 +15,7 @@ import javax.swing.*;
 import javax.swing.border.TitledBorder;
 
 
-public class PokémonFrame extends JFrame {
+public class PokemonFrame extends JFrame {
 	JPanel outerPanel = new JPanel(new CardLayout());
 
 	// INSTANTIATE CARDS
@@ -42,8 +42,8 @@ public class PokémonFrame extends JFrame {
 
 
 
-	public PokémonFrame() {
-		super("Pokémon");
+	public PokemonFrame() {
+		super("Pokemon");
 		setSize(800,720);
 		setLocation(300, 100);
 		setMinimumSize(new Dimension(800,720));
@@ -389,6 +389,6 @@ public class PokémonFrame extends JFrame {
         
      
 	public static void main (String args []){
-		new PokémonFrame();
+		new PokemonFrame();
 	}
 }
