@@ -21,7 +21,7 @@ public class ServerUser extends User implements Runnable {
 	public static final String DB_NAME = "group_db";
 	public static final String DRIVER = "com.mysql.jdbc.Driver";
 	public static final String USER = "root";
-	public static final String PASSWORD = "toor";
+	public static final String PASSWORD = "";
 	private static ReentrantLock lock = new ReentrantLock();
 	
 	public ServerUser(Socket s) {
