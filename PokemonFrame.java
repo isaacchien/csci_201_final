@@ -99,8 +99,15 @@ public class PokemonFrame extends JFrame {
 		myClientUser = new ClientUser();
 		Thread clientThread = new Thread(myClientUser);
 		clientThread.start();
+		myClientUser.setPokemonFrame(this);
 		
 	}
+	
+	public void userHasLoggedIn() {
+		cl.show(outerPanel, "Main Menu");
+	}
+	
+	
 	private void createStorePanel(){  //Very ugly, but can't find out how to make it look better 
 		JLabel myGold = new JLabel("XXXX gold");
 		JButton boost = new JButton("Boost");
@@ -374,9 +381,6 @@ public class PokemonFrame extends JFrame {
 				
 				System.out.println("Username:" +  loginMessage.getUsername());
 				System.out.println("Password:" + loginMessage.getPassword());
-				
-				
-				cl.show(outerPanel, "Main Menu");
 			}
         });
         cancelButton.addActionListener(new ActionListener(){

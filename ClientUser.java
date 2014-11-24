@@ -9,6 +9,7 @@ public class ClientUser extends User implements Runnable{
 	Socket mySocket;
 	ObjectInputStream in;
 	ObjectOutputStream out;
+	PokemonFrame pk; 
 	
 	public ClientUser(){
 		super();
@@ -22,6 +23,10 @@ public class ClientUser extends User implements Runnable{
 			e.printStackTrace();
 		}
 		
+	}
+	
+	public void setPokemonFrame(PokemonFrame pk) {
+		this.pk = pk;
 	}
 	
 	public ObjectOutputStream getOutputStream(){
@@ -47,8 +52,8 @@ public class ClientUser extends User implements Runnable{
 						System.out.println("Verifying...");
 						LoginAuthenticated messageReceived = (LoginAuthenticated)objectReceived;
 						if(messageReceived.getAuthenticated()){
-							System.out.println("Login verified");
-							
+							System.out.println("Login verified");	
+							this.pk.userHasLoggedIn();
 						}
 						else{
 							System.out.println("Login failed");
