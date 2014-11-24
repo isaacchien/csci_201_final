@@ -170,7 +170,6 @@ public class ServerUser extends User implements Runnable {
 	public void run() {
 		try {
 			ObjectInputStream in  = new ObjectInputStream(userSocket.getInputStream());
-			
 			while(true){
 				Object objectReceived = in.readObject();
 				if(objectReceived instanceof Message){

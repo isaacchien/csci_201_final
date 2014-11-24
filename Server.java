@@ -53,6 +53,8 @@ public class Server {
 				ServerUser user2 = queue.get(1);
 				user1.setOpponentID(user2.getID());
 				user2.setOpponentID(user1.getID());
+				//user1.startBattle();
+				//user2.startBattle();
 				queue.remove(1);
 				queue.remove(0);
 			}
