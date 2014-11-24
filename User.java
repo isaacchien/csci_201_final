@@ -3,7 +3,6 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.HashMap;
-import java.util.concurrent.locks.ReentrantLock;
 
 public class User {
 	private int id;
@@ -11,6 +10,7 @@ public class User {
 	private int money;
 	private int wins;
 	private int losses;
+	private int opponentId;
 	private HashMap<String, Integer> items;
 	
 	
@@ -32,6 +32,14 @@ public class User {
 	
 	public void setID(int id) {
 		this.id = id;
+	}
+	
+	public int getOpponentID() {
+		return this.opponentId;
+	}
+	
+	public void setOpponentID(int id) {
+		this.opponentId = id;
 	}
 
 	public String getUsername() {
