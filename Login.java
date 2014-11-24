@@ -1,7 +1,7 @@
 public class Login extends MenuAction{
 	
 	private String username;
-	private String passwordHash;
+	private String password;
 	
 
 	public String getUsername() {
@@ -10,13 +10,12 @@ public class Login extends MenuAction{
 	public void setUsername(String username) {
 		this.username = username;
 	}
-
 	
-	public String getPasswordHash() {
-		return passwordHash;
+	public String getPassword() {
+		return password;
 	}
-	public void setPasswordHash(String passwordHash) {
-		this.passwordHash = passwordHash;
+	public void setPasswordHash(String password) {
+		this.password = password;
 	}
 
 
