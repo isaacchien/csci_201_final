@@ -12,6 +12,8 @@ public class User {
 	private int losses;
 	private int opponentId;
 	private HashMap<String, Integer> items;
+	private Pokemon [] pokemons; 
+	private Pokemon current_pokemon; 
 	
 	
 	public User(){
