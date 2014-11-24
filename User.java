@@ -83,5 +83,9 @@ public class User {
 	public void setItems(HashMap<String, Integer> items) {
 		this.items = items;
 	}
+
+	public Pokemon getCurrentPokemon() { 
+		return current_pokemon; 
+	}
 	
 }
