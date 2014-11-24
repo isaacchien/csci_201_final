@@ -14,7 +14,10 @@ public class ClientUser extends User implements Runnable{
 		super();
 		
 		try {
+			//TODO: DO NOT HARDCODE LOCALHOST
 			mySocket = new Socket("127.0.0.1", 1234);
+			in = new ObjectInputStream(mySocket.getInputStream());
+			out = new ObjectOutputStream(mySocket.getOutputStream());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -26,21 +29,25 @@ public class ClientUser extends User implements Runnable{
 		
 		
 		while(true){
+			
 			System.out.println("Top of run in ClientUser");
+			
 			try{
-				ObjectOutputStream in = new ObjectOutputStream(mySocket.getOutputStream());
+				
 				
 				// send a message every second
 				while(true){
 					
-					AttackData testMessageToSend = new AttackData();
-					out.writeObject(testMessageToSend);
-					Thread.sleep(1000);
+					Object objectReceived = in.readObject();
+					if(objectReceived instanceof Message){
+						Message messageReceived = (Message)objectReceived;
+						// do stuff with message
+					}
 						
 				}
 			}
 			
-			catch(InterruptedException | IOException e){
+			catch(IOException | ClassNotFoundException e){
 			
 			}		
 		}
