@@ -16,6 +16,10 @@ import javax.swing.border.TitledBorder;
 
 
 public class PokemonFrame extends JFrame {
+	
+	ClientUser myClientUser;
+	
+	
 	JPanel outerPanel = new JPanel(new CardLayout());
 
 	// INSTANTIATE CARDS
@@ -90,6 +94,10 @@ public class PokemonFrame extends JFrame {
 
 		
 		setVisible(true);
+		
+		
+		
+		
 	}
 	private void createStorePanel(){  //Very ugly, but can't find out how to make it look better 
 		JLabel myGold = new JLabel("XXXX gold");
@@ -119,6 +127,8 @@ public class PokemonFrame extends JFrame {
 
 		
 		add(storePanel);
+		
+		
 
 	}
 	private void noOpponentPanel(){
@@ -210,23 +220,25 @@ public class PokemonFrame extends JFrame {
         gbc.gridwidth = 2;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 1;
-        jp.add(new JTextField(10), gbc);
+        JTextField loginField = new JTextField(10);
+        jp.add(loginField, gbc);
         gbc.gridy++;
-        jp.add(new JTextField(10), gbc);
+        JTextField passwordField = new JTextField(10);
+        jp.add(passwordField, gbc);
 
         gbc.gridx = 1;
         gbc.gridy++;
         gbc.gridwidth = 1;
         gbc.weightx = 0;
         gbc.fill = GridBagConstraints.NONE;
-        JButton loginButton = new JButton("Sign Up");
-        jp.add(loginButton, gbc);
+        JButton signUpButton = new JButton("Sign Up");
+        jp.add(signUpButton, gbc);
         gbc.gridx++;
         JButton cancelButton = new JButton("Cancel");
         jp.add(cancelButton, gbc);
         
         // if Sign Up successful
-        loginButton.addActionListener(new ActionListener(){
+        signUpButton.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				cl.show(outerPanel, "Main Menu");
@@ -327,10 +339,11 @@ public class PokemonFrame extends JFrame {
         gbc.gridwidth = 2;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 1;
-        jp.add(new JTextField(10), gbc);
+        JTextField usernameField = new JTextField(10);
+        jp.add(usernameField, gbc);
         gbc.gridy++;
         jp.add(new JTextField(10), gbc);
-
+        JTextField passwordField = new JTextField(10);
         gbc.gridx = 1;
         gbc.gridy++;
         gbc.gridwidth = 1;
@@ -346,6 +359,13 @@ public class PokemonFrame extends JFrame {
         loginButton.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				// SEND LOGIN MESSAGE
+				Login loginMessage = new Login();
+				loginMessage.setUsername(usernameField.getText());
+				loginMessage.setPassword(passwordField.getText());
+				System.out.println("Username:" +  loginMessage.getUsername());
+				System.out.println("Password:" + loginMessage.getPassword());
+				
 				cl.show(outerPanel, "Main Menu");
 			}
         });

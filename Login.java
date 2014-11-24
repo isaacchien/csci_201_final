@@ -14,7 +14,7 @@ public class Login extends MenuAction{
 	public String getPassword() {
 		return password;
 	}
-	public void setPasswordHash(String password) {
+	public void setPassword(String password) {
 		this.password = password;
 	}
 
