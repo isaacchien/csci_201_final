@@ -164,7 +164,10 @@ public class ServerUser extends User implements Runnable {
 	}
 	
 	private void parse(Message msg) {
-		
+		if(msg instanceof Login) {
+			boolean succeeded = this.login(((Login) msg).getUsername(), ((Login) msg).getPassword(), null);
+			
+		}
 	}
 	
 	public void run() {

@@ -13,10 +13,5 @@ public class BattleData extends Message{
 	public void setOpponent(String opponent) {
 		this.opponent = opponent;
 	}
-
-
-
-
-
 	
 }
