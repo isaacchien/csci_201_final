@@ -13,6 +13,11 @@ public class User {
 	private int opponentId;
 	private HashMap<String, Integer> items;
 	
+	
+	public User(){
+		
+		
+	}
 	public User(int id, String username, int money, int wins, int losses, HashMap<String, Integer> items){
 		this.setUsername(username);
 		this.setMoney(money);
