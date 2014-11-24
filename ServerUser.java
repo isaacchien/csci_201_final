@@ -1,7 +1,9 @@
+import java.net.Socket;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
 import java.util.concurrent.locks.ReentrantLock;
@@ -23,33 +25,65 @@ public class ServerUser extends User implements Runnable {
 		this.userSocket = s;
 	}
 	
-	public boolean login(String username, String pass) {
-		PreparedStatement stmt = con.prepareStatement("SELECT id FROM users WHERE username = ? AND password = ?;");
-		stmt.setString(1, username);
-		stmt.setString(2, pass);
-		ResultSet results = stmt.executeQuery();
-		if(results.next()) {
-			this.setID(results.getInt("id"));
-			this.setUsername(username);
-			this.fetch();
-			return true;
-		} 
-		return false;
+	public boolean login(String username, String pass, Connection con) {
+		lock.lock();
+		if(con == null) {
+			con = establishConnection();
+		}
+		if(con == null) {
+			//null;
+			lock.unlock();
+			return false;
+		}
+		PreparedStatement stmt;
+		try {
+			stmt = con.prepareStatement("SELECT id FROM users WHERE username = ? AND password = ?;");
+			stmt.setString(1, username);
+			stmt.setString(2, pass);
+			ResultSet results = stmt.executeQuery();
+			if(results.next()) {
+				this.setID(results.getInt("id"));
+				this.setUsername(username);
+				this.fetch();
+				lock.unlock();
+				return true;
+			} 
+			lock.unlock();
+			return false;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			lock.unlock();
+			return false;
+		}
 	}
 	
 	public boolean createUser(String username, String pass) {
-		PreparedStatement stmt = con.prepareStatement("SELECT id FROM users WHERE username = ? AND password = ?;");
-		stmt.setString(1, username);
-		stmt.setString(2, pass);
-		ResultSet results = stmt.executeQuery();
-		if(!results.next()) {
-			//throw existing user
+		Connection con = establishConnection();
+		if(con == null) {
+			//null;
+			lock.unlock();
 			return false;
 		}
-		PreparedStatement stmt = con.prepareStatement("INSERT INTO users (username, password) VALUES (?, ?);");
-		stmt.setString(1, username);
-		stmt.setString(2, pass);
-		return login(username, pass);
+		PreparedStatement stmt;
+		try {
+			stmt = con.prepareStatement("SELECT id FROM users WHERE username = ? AND password = ?;");
+			stmt.setString(1, username);
+			stmt.setString(2, pass);
+			ResultSet results = stmt.executeQuery();
+			if(!results.next()) {
+				//throw existing user
+				lock.unlock();
+				return false;
+			}
+			PreparedStatement stmt2 = con.prepareStatement("INSERT INTO users (username, password) VALUES (?, ?);");
+			stmt2.setString(1, username);
+			stmt2.setString(2, pass);
+			return login(username, pass, con);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			lock.unlock();
+			return false;
+		}
 	}
 	
 	private Connection establishConnection() {
@@ -69,16 +103,16 @@ public class ServerUser extends User implements Runnable {
 			Connection con = establishConnection();
 			if(con == null) {
 				System.out.println("Unable to establish connection");
-				return;
+				return false;
 			}
 			PreparedStatement stmt = con.prepareStatement("INSERT INTO users (wins, total_games, money, steroids, morphine, epinephrine) VALUES (?, ?, ?, ?, ?, ?) WHERE id = ?;");
-			stmt.setInt(1, this.wins);
-			stmt.setInt(2, this.wins + this.losses);
-			stmt.setInt(3, this.money);
-			stmt.setInt(4, this.items.get('steroids').intValue());
-			stmt.setInt(5, this.items.get('morphine').intValue());
-			stmt.setInt(6, this.items.get('epinephrine').intValue());
-			stmt.setInt(7, this.id);
+			stmt.setInt(1, this.getWins());
+			stmt.setInt(2, this.getWins() + this.getLosses());
+			stmt.setInt(3, this.getMoney());
+			stmt.setInt(4, this.getItems().get("steroids").intValue());
+			stmt.setInt(5, this.getItems().get("morphine").intValue());
+			stmt.setInt(6, this.getItems().get("epinephrine").intValue());
+			stmt.setInt(7, this.getID());
 			stmt.execute();
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -91,25 +125,33 @@ public class ServerUser extends User implements Runnable {
 	}
 	
 	public boolean fetch() {
-		lock.lock()
+		lock.lock();
+		Connection con = establishConnection();
+		if(con == null) {
+			//badddd
+			lock.unlock();
+			return false;
+		}
 		try {
 			Statement stmt = con.createStatement();
 			if(con == null) {
 				System.out.println("Unable to establish connection");
-				return;
+				lock.unlock();
+				return false;
 			}
-			ResultSet results = stmt.executeQuery("SELECT wins, total_games, money, steroids, morphine, epinephrine FROM users WHERE id = " + this.id + ";");
+			ResultSet results = stmt.executeQuery("SELECT wins, total_games, money, steroids, morphine, epinephrine FROM users WHERE id = " + this.getID() + ";");
 			if(results == null) {
-				System.out.println("There were no results")
-				return;
+				System.out.println("There were no results");
+				lock.unlock();
+				return false;
 			}
 			results.next();
-			this.wins = results.getInt("wins");
-			this.losses = results.getInt("total_games") - this.wins;
-			this.money = results.getInt("money");
-			this.items.put("steroids", results.getInt("steroids"));
-			this.items.put("morphine", results.getInt("morphine"));
-			this.items.put("epinephrine", results.getInt("epinephrine"));
+			this.setWins( results.getInt("wins") );
+			this.setLosses( results.getInt("total_games") - this.getWins() );
+			this.setMoney( results.getInt("money") );
+			this.getItems().put("steroids", results.getInt("steroids"));
+			this.getItems().put("morphine", results.getInt("morphine"));
+			this.getItems().put("epinephrine", results.getInt("epinephrine"));
 		} catch(Exception e) {
 			e.printStackTrace();
 			lock.unlock();
@@ -118,10 +160,6 @@ public class ServerUser extends User implements Runnable {
 			lock.unlock();
 			return false;
 		}
-	}
-	
-	private void setID(int id) {
-		this.id = id;
 	}
 	
 	public void run() {

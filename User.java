@@ -24,6 +24,10 @@ public class User {
 	public int getID() {
 		return this.id;
 	}
+	
+	public void setID(int id) {
+		this.id = id;
+	}
 
 	public String getUsername() {
 		return username;
