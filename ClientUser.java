@@ -24,6 +24,10 @@ public class ClientUser extends User implements Runnable{
 		
 	}
 	
+	public ObjectOutputStream getOutputStream(){
+		return out;
+	}
+	
 	public void run() {
 		
 		
@@ -39,9 +43,18 @@ public class ClientUser extends User implements Runnable{
 				while(true){
 					
 					Object objectReceived = in.readObject();
-					if(objectReceived instanceof Message){
-						Message messageReceived = (Message)objectReceived;
-						// do stuff with message
+					if(objectReceived instanceof LoginAuthenticated){
+						System.out.println("Verifying...");
+						LoginAuthenticated messageReceived = (LoginAuthenticated)objectReceived;
+						if(messageReceived.getAuthenticated()){
+							System.out.println("Login verified");
+							
+						}
+						else{
+							System.out.println("Login failed");
+						}
+		
+						
 					}
 						
 				}

@@ -8,6 +8,7 @@ import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,6 +17,8 @@ import javax.swing.border.TitledBorder;
 
 
 public class PokemonFrame extends JFrame {
+	
+	ClientUser myClientUser;
 	
 	JPanel outerPanel = new JPanel(new CardLayout());
 
@@ -92,8 +95,9 @@ public class PokemonFrame extends JFrame {
 		
 		setVisible(true);
 		
-		
-		Thread clientThread = new Thread(new ClientUser());
+		// CODE
+		myClientUser = new ClientUser();
+		Thread clientThread = new Thread(myClientUser);
 		clientThread.start();
 		
 	}
@@ -361,8 +365,16 @@ public class PokemonFrame extends JFrame {
 				Login loginMessage = new Login();
 				loginMessage.setUsername(usernameField.getText());
 				loginMessage.setPassword(passwordField.getText());
+				try {
+					myClientUser.getOutputStream().writeObject(loginMessage);
+					
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+				
 				System.out.println("Username:" +  loginMessage.getUsername());
 				System.out.println("Password:" + loginMessage.getPassword());
+				
 				
 				cl.show(outerPanel, "Main Menu");
 			}
