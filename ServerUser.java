@@ -68,6 +68,7 @@ public class ServerUser extends User implements Runnable {
 	
 	public boolean createUser(String username, String pass) {
 		Connection con = establishConnection();
+		
 		if(con == null) {
 			//null;
 			//lock.unlock();
@@ -79,14 +80,17 @@ public class ServerUser extends User implements Runnable {
 			stmt.setString(1, username);
 			stmt.setString(2, pass);
 			ResultSet results = stmt.executeQuery();
-			if(!results.next()) {
+			
+			if(results.next()) {
 				//throw existing user
 				//lock.unlock();
 				return false;
 			}
 			PreparedStatement stmt2 = con.prepareStatement("INSERT INTO users (username, password) VALUES (?, ?);");
+			
 			stmt2.setString(1, username);
 			stmt2.setString(2, pass);
+			stmt2.execute();
 			return login(username, pass, con);
 		} catch (SQLException e) {
 			e.printStackTrace();
