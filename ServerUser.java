@@ -1,4 +1,6 @@
+import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -13,6 +15,7 @@ import java.util.concurrent.locks.ReentrantLock;
 public class ServerUser extends User implements Runnable {
 	
 	private Socket userSocket;
+	ObjectOutputStream out;
 	
 	public static final String DB_ADDRESS = "jdbc:mysql://localhost/";
 	public static final String DB_NAME = "group_db";
@@ -24,6 +27,11 @@ public class ServerUser extends User implements Runnable {
 	public ServerUser(Socket s) {
 		super(-1, "", 0, 0, 0, new HashMap<String, Integer>());
 		this.userSocket = s;
+		try {
+			out = new ObjectOutputStream(s.getOutputStream());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public boolean login(String username, String pass, Connection con) {
@@ -166,7 +174,18 @@ public class ServerUser extends User implements Runnable {
 	private void parse(Message msg) {
 		if(msg instanceof Login) {
 			boolean succeeded = this.login(((Login) msg).getUsername(), ((Login) msg).getPassword(), null);
-			
+			try {
+				out.writeObject(new LoginAuthenticated(succeeded));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} else if(msg instanceof NewUser) {
+			boolean succeeded = this.createUser(((Login) msg).getUsername(), ((Login) msg).getPassword());
+			try {
+				out.writeObject(new LoginAuthenticated(succeeded));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	
@@ -177,7 +196,7 @@ public class ServerUser extends User implements Runnable {
 				Object objectReceived = in.readObject();
 				if(objectReceived instanceof Message){
 					Message messageReceived = (Message)objectReceived;
-					// do stuff with message
+					parse(messageReceived);
 				}
 			}
 			
