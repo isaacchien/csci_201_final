@@ -1,18 +1,28 @@
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.util.HashMap;
+import java.util.concurrent.locks.ReentrantLock;
 
-public class User{
+public class User {
+	private int id;
 	private String username;
 	private int money;
 	private int wins;
 	private int losses;
 	private HashMap<String, Integer> items;
 	
-	public User(String username, int money, int wins, int losses, HashMap<String, Integer> items){
+	public User(int id, String username, int money, int wins, int losses, HashMap<String, Integer> items){
 		this.setUsername(username);
 		this.setMoney(money);
 		this.setWins(wins);
 		this.setLosses(losses);
 		this.setItems(items);
+	}
+	
+	public int getID() {
+		return this.id;
 	}
 
 	public String getUsername() {
