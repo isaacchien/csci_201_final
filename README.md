@@ -18,3 +18,12 @@ To get images working
 
 We should change the image file paths in the code so that we don't have to do that ^
 
+
+MYSQL SET UP
+
+1. Follow lab 9 instruction for the most part. Keep the password blank
+2. Make sure your SQL service is running
+2. When you create your schema name it 'group_db' and set it as the default
+3. In the workbench go to File->Open SQL Script and select migration.sql from the repo
+4. Click lightning bolt execute button
+
