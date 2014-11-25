@@ -11,8 +11,8 @@ HOW TO USE GIT WITH ECLIPSE
 6. Now you're working out of your cloned repo and everything will be tracked. If you pull give eclipse a second and it should update the code right in front of you, but if not just do a manual refresh.
 
 To get images working
-1. Right click on the images folder under csci_201_final in eclipse and select copy.
 
+1. Right click on the images folder under csci_201_final in eclipse and select copy.
 2. Right click on the src folder right above it and select paste.
 
 
