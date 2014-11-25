@@ -12,7 +12,7 @@ HOW TO USE GIT WITH ECLIPSE
 
 To get images working
 1. Right click on the images folder under csci_201_final in eclipse and select copy.
-2. Right click on the src folder right above it and select paste. 
+2. Right click on the src folder right above it and select paste.
 
 
 We should change the image file paths in the code so that we don't have to do that ^
