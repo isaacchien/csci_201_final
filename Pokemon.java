@@ -6,6 +6,14 @@ public class Pokemon{
 	private Attack[] allAttacks = new Attack[4];
 	private ImageIcon pokemonImage;
 	private double strength;
+	
+	public Pokemon(String name, int healthPoints, ImageIcon image, double strength) {
+		this.name = name;
+		this.healthPoints = healthPoints;
+		this.pokemonImage = image;
+		this.strength = strength;
+	}
+	
 	public String getName() {
 		return name;
 	}

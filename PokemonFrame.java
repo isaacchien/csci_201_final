@@ -261,10 +261,6 @@ public class PokemonFrame extends JFrame {
 				
 				System.out.println("Username:" +  newLoginMessage.getUsername());
 				System.out.println("Password:" + newLoginMessage.getPassword());
-				
-				
-				
-				cl.show(outerPanel, "Main Menu");
 			}
         });
         cancelButton.addActionListener(new ActionListener(){
