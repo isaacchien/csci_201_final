@@ -2,6 +2,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.net.SocketException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -75,20 +76,16 @@ public class ServerUser extends User implements Runnable {
 		Connection con = establishConnection();
 		
 		if(con == null) {
-			//null;
-			//lock.unlock();
 			return false;
 		}
 		PreparedStatement stmt;
 		try {
-			stmt = con.prepareStatement("SELECT id FROM users WHERE username = ? AND password = ?;");
+			stmt = con.prepareStatement("SELECT id FROM users WHERE username = ?;");
 			stmt.setString(1, username);
-			stmt.setString(2, pass);
 			ResultSet results = stmt.executeQuery();
 			
 			if(results.next()) {
-				//throw existing user
-				//lock.unlock();
+				System.out.println(userSocket.getRemoteSocketAddress().toString() + " tried to register with an existing name");
 				return false;
 			}
 			PreparedStatement stmt2 = con.prepareStatement("INSERT INTO users (username, password) VALUES (?, ?);");
@@ -99,7 +96,6 @@ public class ServerUser extends User implements Runnable {
 			return login(username, pass, con);
 		} catch (SQLException e) {
 			e.printStackTrace();
-			//lock.unlock();
 			return false;
 		}
 	}
@@ -188,8 +184,7 @@ public class ServerUser extends User implements Runnable {
 		if(msg instanceof Login) {
 			boolean succeeded = this.login(((Login) msg).getUsername(), ((Login) msg).getPassword(), null);
 			try {
-				out.writeObject(new LoginAuthenticated(succeeded));
-				System.out.println("MONEY: " + this.getMoney());
+				out.writeObject(new LoginAuthenticated(succeeded, false));
 				out.writeObject(new UserUpdate(this.getID(), this.getUsername(), this.getMoney(), this.getWins(), this.getLosses(), this.getOpponentID(), this.getItemQuantity("steroids"), this.getItemQuantity("morphine"), this.getItemQuantity("epinephrine")));
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -197,7 +192,7 @@ public class ServerUser extends User implements Runnable {
 		} else if(msg instanceof NewUser) {
 			boolean succeeded = this.createUser(((NewUser) msg).getUsername(), ((NewUser) msg).getPassword());
 			try {
-				out.writeObject(new LoginAuthenticated(succeeded));
+				out.writeObject(new LoginAuthenticated(succeeded, true));
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -252,7 +247,10 @@ public class ServerUser extends User implements Runnable {
 			
 		} catch (Exception ioe) {
 			System.out.println("IOException in ServerUser run method: " + ioe.getMessage());
-			ioe.printStackTrace();
+			// don't print stack trace for a user simply quiting the program
+			if(!(ioe instanceof SocketException)){
+				ioe.printStackTrace();
+			}
 		}
 	}
 

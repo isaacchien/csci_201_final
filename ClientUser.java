@@ -4,6 +4,8 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.HashMap;
 
+import javax.swing.JOptionPane;
+
 
 public class ClientUser extends User implements Runnable{
 
@@ -76,7 +78,7 @@ public class ClientUser extends User implements Runnable{
 	
 	public void run() {
 		
-		System.out.println("Top of run in ClientUser");
+		System.out.println("Client started listening for messages from server");
 		
 		while(true){
 			
@@ -96,7 +98,20 @@ public class ClientUser extends User implements Runnable{
 							this.pk.userHasLoggedIn();
 						}
 						else{
-							System.out.println("Login failed");
+							
+							if(messageReceived.triedToAuthenticateFromSignUp()){
+								JOptionPane.showMessageDialog(pk,
+									    "That username is already in use.",
+									    "Error",
+									    JOptionPane.ERROR_MESSAGE);
+							}
+							else{
+								System.out.println("Login failed");
+								JOptionPane.showMessageDialog(pk,
+									    "Invalid username or password",
+									    "Error",
+									    JOptionPane.ERROR_MESSAGE);
+							}
 						}
 		
 						

@@ -31,7 +31,7 @@ public class PokemonFrame extends JFrame {
 	
 	CardLayout cl = (CardLayout)(outerPanel.getLayout());
 	
-    ImageIcon logo = new ImageIcon("./src/images/logo.jpg");
+    ImageIcon logo = new ImageIcon("src/images/logo.jpg");
     
 	//LAUREN ADDED NEW CARDS 
 	StorePanel storePanel;
@@ -187,7 +187,7 @@ public class PokemonFrame extends JFrame {
 	private void createSignUpPanel() {
 		JPanel jp = new JPanel();
         jp.setLayout(new GridBagLayout());
-        jp.setBorder(new TitledBorder("Login"));
+        jp.setBorder(new TitledBorder("Sign Up"));
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
@@ -233,6 +233,7 @@ public class PokemonFrame extends JFrame {
 				
 				System.out.println("Username:" +  newLoginMessage.getUsername());
 				System.out.println("Password:" + newLoginMessage.getPassword());
+
 			}
         });
         cancelButton.addActionListener(new ActionListener(){
