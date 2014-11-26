@@ -4,7 +4,6 @@ import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.HashMap;
 
-import Pokemon;
 
 public class User {
 	private int id;
