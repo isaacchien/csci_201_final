@@ -1,3 +1,4 @@
+import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -19,15 +20,19 @@ public class User {
 	
 	
 	public User(){
-		
-		
+		this.setItems(new HashMap<String, Integer>());
 	}
+	
 	public User(int id, String username, int money, int wins, int losses, HashMap<String, Integer> items){
 		this.setUsername(username);
 		this.setMoney(money);
 		this.setWins(wins);
 		this.setLosses(losses);
-		this.setItems(items);
+		if(items != null) {
+			this.setItems(items);
+		} else {
+			this.setItems(new HashMap<String, Integer>());
+		}
 	}
 	
 	public int getID() {
@@ -80,6 +85,22 @@ public class User {
 
 	public HashMap<String, Integer> getItems() {
 		return items;
+	}
+	
+	public void updateItem(String itemName, int quantity) {
+		if(this.items.containsKey(itemName)) {
+			this.items.put(itemName, new Integer(this.items.get(itemName).intValue() + quantity));
+		} else {
+			this.items.put(itemName, new Integer(quantity));
+		}
+	}
+	
+	public int getItemQuantity(String itemName) {
+		if(!this.items.containsKey(itemName)) {
+			System.out.println("MISSING: " + itemName);
+			//throw
+		} 
+		return this.items.get(itemName).intValue();
 	}
 
 	public void setItems(HashMap<String, Integer> items) {

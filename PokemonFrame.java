@@ -34,7 +34,7 @@ public class PokemonFrame extends JFrame {
     ImageIcon logo = new ImageIcon("./src/images/logo.jpg");
     
 	//LAUREN ADDED NEW CARDS 
-	JPanel storePanel = new JPanel();
+	StorePanel storePanel;
 	JPanel waitingPanel = new JPanel();
 	JPanel choosePokemonPanel = new JPanel();
 	
@@ -54,6 +54,11 @@ public class PokemonFrame extends JFrame {
 		setMaximumSize(new Dimension(800, 720));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
+		// CODE
+		myClientUser = new ClientUser();
+		Thread clientThread = new Thread(myClientUser);
+		clientThread.start();
+		myClientUser.setPokemonFrame(this);
 		
 		//populating pokemon image library
 		for (int i = 0; i < 15; i++){
@@ -95,12 +100,6 @@ public class PokemonFrame extends JFrame {
 		
 		setVisible(true);
 		
-		// CODE
-		myClientUser = new ClientUser();
-		Thread clientThread = new Thread(myClientUser);
-		clientThread.start();
-		myClientUser.setPokemonFrame(this);
-		
 	}
 	
 	public void userHasLoggedIn() {
@@ -109,37 +108,10 @@ public class PokemonFrame extends JFrame {
 	
 	
 	private void createStorePanel(){  //Very ugly, but can't find out how to make it look better 
-		JLabel myGold = new JLabel("XXXX gold");
-		JButton boost = new JButton("Boost");
-		JButton heal = new JButton("Heal");
-		JButton revive = new JButton("Revive");
-		myGold.setAlignmentX(Component.CENTER_ALIGNMENT); 
-
-		storePanel.add(myGold); 
-		
-		boost.setSize(this.getWidth()*3/4, this.getHeight()/5);
-		boost.setMaximumSize(boost.getSize());
-		boost.setAlignmentX(Component.CENTER_ALIGNMENT); 
-	
-		heal.setSize(this.getWidth()*3/4, this.getHeight()/5);
-		heal.setMaximumSize(heal.getSize());
-		heal.setAlignmentX(Component.CENTER_ALIGNMENT); 
-		revive.setSize(this.getWidth()*3/4, this.getHeight()/5);
-		revive.setMaximumSize(revive.getSize());
-		revive.setAlignmentX(Component.CENTER_ALIGNMENT); 
-		
-		
-		storePanel.setLayout(new BoxLayout(storePanel, BoxLayout.Y_AXIS));
-		storePanel.add(boost); 
-		storePanel.add(heal); 
-		storePanel.add(revive); 
-
-		
-		add(storePanel);
-		
-		
-
+		this.storePanel = new StorePanel(myClientUser, this);
 	}
+
+	
 	private void noOpponentPanel(){
 		
 		JLabel waiting = new JLabel("Waiting for Opponent...");
@@ -329,6 +301,7 @@ public class PokemonFrame extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				cl.show(outerPanel, "Store");
+				storePanel.update();
 			}
         });
         join.addActionListener(new ActionListener(){

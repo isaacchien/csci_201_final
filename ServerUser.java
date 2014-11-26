@@ -22,6 +22,11 @@ public class ServerUser extends User implements Runnable {
 	public static final String DRIVER = "com.mysql.jdbc.Driver";
 	public static final String USER = "root";
 	public static final String PASSWORD = "";
+	
+	public static final int STEROIDS_PRICE = 50;
+	public static final int MORPHINE_PRICE = 50;
+	public static final int EPINEPHRINE_PRICE = 50;
+	
 	private static ReentrantLock lock = new ReentrantLock();
 	
 	public ServerUser(Socket s) {
@@ -110,7 +115,7 @@ public class ServerUser extends User implements Runnable {
 		return con;
 	}
 	
-	public boolean update () {
+	public boolean update() {
 		//lock.lock();
 		try {
 			Connection con = establishConnection();
@@ -165,6 +170,10 @@ public class ServerUser extends User implements Runnable {
 			this.getItems().put("steroids", results.getInt("steroids"));
 			this.getItems().put("morphine", results.getInt("morphine"));
 			this.getItems().put("epinephrine", results.getInt("epinephrine"));
+			System.out.println("steroids: " + results.getInt("steroids"));
+			System.out.println("epinephrine: " + results.getInt("epinephrine"));
+			System.out.println("epinephrine: " + results.getInt("epinephrine"));
+			
 		} catch(Exception e) {
 			e.printStackTrace();
 			//lock.unlock();
@@ -180,6 +189,8 @@ public class ServerUser extends User implements Runnable {
 			boolean succeeded = this.login(((Login) msg).getUsername(), ((Login) msg).getPassword(), null);
 			try {
 				out.writeObject(new LoginAuthenticated(succeeded));
+				System.out.println("MONEY: " + this.getMoney());
+				out.writeObject(new UserUpdate(this.getID(), this.getUsername(), this.getMoney(), this.getWins(), this.getLosses(), this.getOpponentID(), this.getItemQuantity("steroids"), this.getItemQuantity("morphine"), this.getItemQuantity("epinephrine")));
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -189,6 +200,41 @@ public class ServerUser extends User implements Runnable {
 				out.writeObject(new LoginAuthenticated(succeeded));
 			} catch (IOException e) {
 				e.printStackTrace();
+			}
+		} else if(msg instanceof PurchaseUpdate) {
+			processPurchase((PurchaseUpdate)msg);
+		}
+	}
+
+	private void processPurchase(PurchaseUpdate pu) {
+		int total = 0;
+		if(pu.getSteroids() != 0) {
+			total += pu.getSteroids() * STEROIDS_PRICE;
+		}
+		if(pu.getMorphine() != 0) {
+			total += pu.getMorphine() * MORPHINE_PRICE;
+		}
+		if(pu.getEpinephrine() != 0) {
+			total += pu.getEpinephrine() * EPINEPHRINE_PRICE;
+		}
+		if(this.getMoney() >= total) {
+			this.setMoney(this.getMoney() - total);
+			this.updateItem("steroids", pu.getSteroids());
+			this.updateItem("morphine", pu.getMorphine());
+			this.updateItem("epinephrine", pu.getEpinephrine());
+			if(!this.update()) {
+				//trouble connecting to server
+				try {
+					out.writeObject(new PurchaseUpdate(this.getID(), 0, false, 0, 0, 0));
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			} else {
+				try {
+					out.writeObject(new PurchaseUpdate(this.getID(), this.getMoney(), true, this.getItemQuantity("steroids"), this.getItemQuantity("morphine"), this.getItemQuantity("epinephrine")));
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 	}
