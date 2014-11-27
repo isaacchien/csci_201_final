@@ -108,5 +108,8 @@ public class User {
 	public Pokemon getCurrentPokemon() { 
 		return current_pokemon; 
 	}
+	public void setCurrentPokemon(Pokemon pokemon) { 
+		current_pokemon = pokemon; 
+	}
 	
 }
